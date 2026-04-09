@@ -34,6 +34,10 @@ Open `http://localhost:5173`
 
 Every push to `main` triggers a GitHub Actions workflow that builds and deploys to Azure Static Web Apps automatically.
 
+## Blog
+
+- [I Built an AI Monitoring Agent to See What My Customers See](https://medium.com/@0H_b0yy/im-an-aks-support-engineer-i-built-an-ai-monitoring-agent-to-see-what-my-customers-see-dfef7fa23971)
+
 ## Author
 
 **Eric Fernandez**

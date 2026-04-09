@@ -80,7 +80,7 @@ const BLOG_POSTS = [
     date: "2025",
     excerpt: "How I built an autonomous Kubernetes monitoring agent that uses Claude to diagnose cluster issues in real time.",
     tags: ["AKS", "AI", "Claude"],
-    link: "https://medium.com"
+    link: "https://medium.com/@0H_b0yy/im-an-aks-support-engineer-i-built-an-ai-monitoring-agent-to-see-what-my-customers-see-dfef7fa23971"
   },
   {
     title: "Coming Soon: UDR Egress Patterns in AKS",
