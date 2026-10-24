@@ -1,0 +1,260 @@
+@import "@fontsource-variable/dm-sans/wght.css";
+@import "@fontsource/dm-serif-display/400.css";
+@import "@fontsource/dm-mono/400.css";
+@import "@fontsource/dm-mono/500.css";
+
+/* ---------- Tokens ---------- */
+:root {
+  --bg: #fcfcfa;
+  --bg-alt: #f8f7f4;
+  --bg-chip: #f0ede8;
+  --bg-chip-alt: #eae7e0;
+
+  --ink: #1a1a1a;
+  --ink-body: #444;
+  --ink-muted: #666;
+  --ink-faint: #6b6b6b;
+  --ink-chip: #555;
+
+  --accent: #6b8f71; /* decorative: rules, markers, hover borders */
+  --accent-ink: #4f7356; /* text: labels, links (WCAG AA on all backgrounds) */
+
+  --line: #e8e5e0;
+  --line-strong: #ddd;
+
+  --font-serif: "DM Serif Display", Georgia, serif;
+  --font-sans: "DM Sans Variable", "DM Sans", Helvetica, Arial, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+
+  --wrap: 900px;
+  --wrap-wide: 1100px;
+  --gutter: 24px;
+  --section-y: clamp(80px, 12vw, 120px);
+  --header-h: 64px;
+  --radius: 6px;
+
+  color-scheme: light;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------- Layout helpers ---------- */
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: var(--section-y) 0;
+}
+
+.section--alt {
+  background: var(--bg-alt);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(30px, 5vw, 36px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin-bottom: 48px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  background: var(--bg-chip);
+  color: var(--ink-chip);
+  border-radius: 3px;
+}
+
+.chips--lg {
+  gap: 10px;
+}
+
+.chips--lg .chip {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 14px 32px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.btn--solid {
+  background: var(--ink);
+  color: var(--bg);
+  border: 1.5px solid var(--ink);
+}
+
+.btn--solid:hover {
+  background: #333;
+  border-color: #333;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid #ccc;
+}
+
+.btn--ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- Motion (progressive enhancement, never hides content without support) ---------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro > * {
+    animation: fade-up 0.6s ease both;
+  }
+  .intro > :nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .intro > :nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  .intro > :nth-child(4) {
+    animation-delay: 0.45s;
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+  }
+}

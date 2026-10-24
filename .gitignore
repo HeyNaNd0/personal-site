@@ -1,0 +1,21 @@
+# Dependencies — installed from package-lock.json, never committed
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/

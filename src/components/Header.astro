@@ -1,0 +1,136 @@
+---
+import { NAV } from "../data/site";
+
+interface Props {
+  /** true on the home page: links scroll to sections. Elsewhere they point back to the home page. */
+  sectionNav?: boolean;
+}
+
+const { sectionNav = false } = Astro.props;
+const prefix = sectionNav ? "" : "/";
+---
+
+<header class="site-header" data-site-header>
+  <div class="site-header__inner">
+    <a class="brand" href={sectionNav ? "#top" : "/"} aria-label="Eric Fernandez — home">EF<span aria-hidden="true">.</span></a>
+    <nav class="site-nav" aria-label="Sections">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={`${prefix}${item.href}`} data-nav-link={item.href.slice(1)}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script src="../scripts/nav.ts"></script>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    background: rgb(252 252 250 / 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+
+  .site-header[data-scrolled] {
+    border-bottom-color: var(--line);
+  }
+
+  .site-header__inner {
+    max-width: var(--wrap-wide);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .brand {
+    flex: none;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .brand span {
+    color: var(--accent);
+  }
+
+  .site-nav {
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
+    mask-image: linear-gradient(to right, #000 85%, transparent);
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: 32px;
+    padding: 4px 0;
+  }
+
+  .site-nav a {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #555;
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current="true"] {
+    color: var(--accent-ink);
+  }
+
+  .site-nav a[aria-current="true"] {
+    border-bottom-color: var(--accent);
+  }
+
+  @media (min-width: 720px) {
+    .site-nav {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+
+  @media (max-width: 719px) {
+    .site-header__inner {
+      gap: 16px;
+    }
+    .site-nav ul {
+      gap: 18px;
+      padding-right: 24px;
+    }
+    .site-nav a {
+      font-size: 12px;
+    }
+  }
+</style>

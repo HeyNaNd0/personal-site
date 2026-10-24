@@ -1,0 +1,103 @@
+---
+import { CONTACT, LINKS } from "../data/site";
+
+const items = [
+  { label: "Email", href: `mailto:${LINKS.email}`, icon: "✉", external: false },
+  { label: "LinkedIn", href: LINKS.linkedin, icon: "in", external: true },
+  { label: "GitHub", href: LINKS.github, icon: "<>", external: true },
+];
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">Contact</p>
+      <h2 id="contact-title" class="section-title contact__title">{CONTACT.heading}</h2>
+      <p class="contact__blurb">{CONTACT.blurb}</p>
+    </div>
+    <ul class="contact__links reveal">
+      {
+        items.map((l) => (
+          <li>
+            <a
+              class="contact__link"
+              href={l.href}
+              target={l.external ? "_blank" : undefined}
+              rel={l.external ? "me noopener" : undefined}
+            >
+              <span class="contact__icon" aria-hidden="true">
+                {l.icon}
+              </span>
+              {l.label}
+              {l.external && <span class="sr-only"> (opens in a new tab)</span>}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact {
+    text-align: center;
+  }
+
+  .contact__title {
+    margin-bottom: 16px;
+  }
+
+  .contact__blurb {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink-muted);
+    max-width: 500px;
+    margin: 0 auto 40px;
+  }
+
+  .contact__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .contact__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      color 0.2s;
+  }
+
+  .contact__link:hover {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .contact__icon {
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    .contact__links {
+      gap: 12px;
+    }
+    .contact__links li {
+      flex: 1 1 100%;
+    }
+    .contact__link {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

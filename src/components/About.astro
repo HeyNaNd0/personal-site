@@ -1,0 +1,59 @@
+---
+import { ABOUT, SKILLS } from "../data/site";
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="eyebrow">About</p>
+      <h2 id="about-title" class="section-title about__title">{ABOUT.heading}</h2>
+    </div>
+    <div class="about__grid reveal">
+      {
+        ABOUT.columns.map((paragraphs) => (
+          <div>
+            {paragraphs.map((p) => (
+              <p class="about__p">{p}</p>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+    <ul class="chips chips--lg about__skills reveal" aria-label="Skills">
+      {SKILLS.map((skill) => <li class="chip">{skill}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .about__title {
+    margin-bottom: 32px;
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .about__p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--ink-body);
+  }
+
+  .about__p + .about__p {
+    margin-top: 16px;
+  }
+
+  .about__skills {
+    margin-top: 40px;
+  }
+
+  @media (max-width: 719px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+</style>
