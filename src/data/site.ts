@@ -19,7 +19,6 @@ export const SITE = {
 };
 
 export const LINKS = {
-  email: "eric.fernandez4@gmail.com",
   linkedin: "https://www.linkedin.com/in/heyfern",
   github: "https://github.com/HeyNaNd0",
   medium: "https://medium.com/@0H_b0yy",
