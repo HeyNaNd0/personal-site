@@ -1,0 +1,91 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** "website" for pages, "article" for blog posts */
+  type?: "website" | "article" | "profile";
+  image?: string;
+  imageAlt?: string;
+  /** Structured data objects, rendered as JSON-LD */
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  /** Show the in-page section nav (home page only) */
+  sectionNav?: boolean;
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  type = "website",
+  image = SITE.ogImage,
+  imageAlt = SITE.ogImageAlt,
+  jsonLd = [],
+  noindex = false,
+  publishedTime,
+  modifiedTime,
+  sectionNav = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+const rssUrl = new URL("rss.xml", Astro.site).href;
+
+// Escape "<" so JSON-LD can never break out of its <script> element.
+const toJsonLd = (data: Record<string, unknown>) => JSON.stringify(data).replace(/</g, "\\u003c");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="author" content={SITE.name} />
+    <meta name="theme-color" content="#fcfcfa" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} — Blog`} href={rssUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph / social previews (LinkedIn, Slack, X, Discord) -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:locale" content="en_US" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={toJsonLd(data)} />)}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header sectionNav={sectionNav} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

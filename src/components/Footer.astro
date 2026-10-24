@@ -1,0 +1,21 @@
+---
+import { SITE } from "../data/site";
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <p>&copy; {year} {SITE.name}. Built with purpose. U.S. Navy veteran.</p>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 40px var(--gutter);
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .site-footer p {
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+</style>

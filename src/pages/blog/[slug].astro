@@ -1,0 +1,229 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { SITE } from "../../data/site";
+import { getPublishedPosts, isLocal, formatDate, type Post } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = (await getPublishedPosts()).filter(isLocal);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, date, updated, tags } = post.data;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = new URL("/", Astro.site).href;
+
+const article = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description,
+  url,
+  mainEntityOfPage: url,
+  datePublished: date?.toISOString(),
+  dateModified: (updated ?? date)?.toISOString(),
+  keywords: tags.join(", "),
+  image: new URL(SITE.ogImage, Astro.site).href,
+  author: { "@type": "Person", "@id": `${siteUrl}#person`, name: SITE.name, url: siteUrl },
+};
+---
+
+<Base
+  title={`${title} — ${SITE.name}`}
+  description={description}
+  type="article"
+  publishedTime={date}
+  modifiedTime={updated}
+  jsonLd={[article]}
+>
+  <article class="article wrap">
+    <header class="article__header">
+      <p class="eyebrow"><a href="/#blog">Blog</a></p>
+      <h1 class="article__title">{title}</h1>
+      <p class="article__meta">
+        {date && <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>}
+        {tags.length > 0 && <span> · {tags.join(" · ")}</span>}
+      </p>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    <footer class="article__footer">
+      <a class="btn btn--ghost" href="/#blog">← All posts</a>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .article {
+    max-width: 760px;
+    padding-top: calc(var(--header-h) + 64px);
+    padding-bottom: var(--section-y);
+  }
+
+  .article__header {
+    margin-bottom: 40px;
+  }
+
+  .article__header .eyebrow a {
+    text-decoration: none;
+  }
+
+  .article__title {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 5.5vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .article__meta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  .article__footer {
+    margin-top: 56px;
+  }
+
+  .prose {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--ink-body);
+  }
+
+  .prose > :global(*) + :global(*) {
+    margin-top: 1.1em;
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-top: 2em;
+  }
+
+  .prose :global(h3) {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 1.6em;
+  }
+
+  .prose :global(a) {
+    color: var(--accent-ink);
+    text-underline-offset: 3px;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.4em;
+  }
+
+  .prose :global(ul) {
+    list-style: disc;
+  }
+
+  .prose :global(ol) {
+    list-style: decimal;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 0.4em;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 16px;
+    color: var(--ink-muted);
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--bg-chip);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .prose :global(pre) {
+    overflow-x: auto;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    background: #1f2420;
+    color: #e8ece9;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Prism token colors (class-based, so they work under the strict CSP) */
+  .prose :global(.token.comment),
+  .prose :global(.token.prolog),
+  .prose :global(.token.doctype),
+  .prose :global(.token.cdata) {
+    color: #8b958d;
+    font-style: italic;
+  }
+
+  .prose :global(.token.punctuation),
+  .prose :global(.token.operator) {
+    color: #b9c2bb;
+  }
+
+  .prose :global(.token.keyword),
+  .prose :global(.token.atrule),
+  .prose :global(.token.important),
+  .prose :global(.token.selector) {
+    color: #e6b17a;
+  }
+
+  .prose :global(.token.string),
+  .prose :global(.token.char),
+  .prose :global(.token.attr-value),
+  .prose :global(.token.url) {
+    color: #a6d6ae;
+  }
+
+  .prose :global(.token.function),
+  .prose :global(.token.class-name),
+  .prose :global(.token.builtin) {
+    color: #8cc4e8;
+  }
+
+  .prose :global(.token.number),
+  .prose :global(.token.boolean),
+  .prose :global(.token.constant),
+  .prose :global(.token.symbol),
+  .prose :global(.token.property),
+  .prose :global(.token.key),
+  .prose :global(.token.attr-name),
+  .prose :global(.token.tag) {
+    color: #f0a3a3;
+  }
+
+  .prose :global(.token.variable),
+  .prose :global(.token.parameter),
+  .prose :global(.token.regex) {
+    color: #d7b8f3;
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius);
+  }
+</style>

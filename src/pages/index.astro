@@ -1,0 +1,53 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Experience from "../components/Experience.astro";
+import Projects from "../components/Projects.astro";
+import Blog from "../components/Blog.astro";
+import Contact from "../components/Contact.astro";
+import { SITE, LINKS, SKILLS, EXPERIENCE, EDUCATION } from "../data/site";
+
+const current = EXPERIENCE[0];
+const siteUrl = new URL("/", Astro.site).href;
+
+// Structured data: tells search engines who this page is about and which profiles are the same person.
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${siteUrl}#person`,
+  name: SITE.name,
+  url: siteUrl,
+  image: new URL(SITE.ogImage, Astro.site).href,
+  jobTitle: current.title,
+  worksFor: { "@type": "Organization", name: current.company },
+  description: SITE.description,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: SITE.location.city,
+    addressRegion: SITE.location.region,
+    addressCountry: SITE.location.country,
+  },
+  alumniOf: { "@type": "CollegeOrUniversity", name: EDUCATION.school },
+  knowsAbout: SKILLS,
+  sameAs: [LINKS.linkedin, LINKS.github, LINKS.medium],
+};
+
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}#website`,
+  url: siteUrl,
+  name: SITE.name,
+  publisher: { "@id": `${siteUrl}#person` },
+};
+---
+
+<Base type="profile" jsonLd={[person, website]} sectionNav>
+  <Hero />
+  <About />
+  <Experience />
+  <Projects />
+  <Blog />
+  <Contact />
+</Base>
