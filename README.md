@@ -73,4 +73,3 @@ Manual, one-time:
 
 - [LinkedIn](https://www.linkedin.com/in/heyfern)
 - [GitHub](https://github.com/HeyNaNd0)
-- [Email](mailto:eric.fernandez4@gmail.com)

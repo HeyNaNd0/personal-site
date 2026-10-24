@@ -4,7 +4,6 @@ import { CONTACT, LINKS } from "../data/site";
 
 const display = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "");
 const items = [
-  { key: "email", href: `mailto:${LINKS.email}`, text: LINKS.email, external: false },
   { key: "linkedin", href: LINKS.linkedin, text: display(LINKS.linkedin), external: true },
   { key: "github", href: LINKS.github, text: display(LINKS.github), external: true },
 ];
