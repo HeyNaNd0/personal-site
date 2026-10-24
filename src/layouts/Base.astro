@@ -51,7 +51,8 @@ const toJsonLd = (data: Record<string, unknown>) => JSON.stringify(data).replace
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="author" content={SITE.name} />
-    <meta name="theme-color" content="#fcfcfa" />
+    <meta name="theme-color" content="#131916" />
+    <meta name="color-scheme" content="dark" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
@@ -82,10 +83,12 @@ const toJsonLd = (data: Record<string, unknown>) => JSON.stringify(data).replace
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header sectionNav={sectionNav} />
-    <main id="main">
-      <slot />
-    </main>
-    <Footer />
+    <div class="window">
+      <Header sectionNav={sectionNav} />
+      <main id="main" class="session">
+        <slot />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

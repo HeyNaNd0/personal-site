@@ -1,39 +1,32 @@
-@import "@fontsource-variable/dm-sans/wght.css";
-@import "@fontsource/dm-serif-display/400.css";
-@import "@fontsource/dm-mono/400.css";
-@import "@fontsource/dm-mono/500.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/400-italic.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 
-/* ---------- Tokens ---------- */
+/* ---------- Tokens: colors follow terminal meaning ---------- */
 :root {
-  --bg: #fcfcfa;
-  --bg-alt: #f8f7f4;
-  --bg-chip: #f0ede8;
-  --bg-chip-alt: #eae7e0;
+  --page: #070a09; /* desktop behind the window */
+  --term: #0c100e; /* terminal background */
+  --bar: #131916; /* window title bar */
+  --line: #222b26;
+  --line-strong: #34403a;
+  --hover: #131a16;
 
-  --ink: #1a1a1a;
-  --ink-body: #444;
-  --ink-muted: #666;
-  --ink-faint: #6b6b6b;
-  --ink-chip: #555;
+  --fg: #d4dbd6; /* command output */
+  --strong: #f2f5f3; /* emphasis */
+  --muted: #8b958d; /* comments, column headers */
 
-  --accent: #6b8f71; /* decorative: rules, markers, hover borders */
-  --accent-ink: #4f7356; /* text: labels, links (WCAG AA on all backgrounds) */
+  --green: #7fc49a; /* the user, success, resolved */
+  --blue: #8cc4e8; /* paths and links */
+  --amber: #e2c08d; /* escalated, pending */
 
-  --line: #e8e5e0;
-  --line-strong: #ddd;
+  --font: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --size: 15px;
+  --gap: clamp(56px, 8vw, 88px); /* space between commands */
+  --pad: clamp(16px, 4vw, 40px); /* inside the window */
+  --bar-h: 44px;
 
-  --font-serif: "DM Serif Display", Georgia, serif;
-  --font-sans: "DM Sans Variable", "DM Sans", Helvetica, Arial, sans-serif;
-  --font-mono: "DM Mono", ui-monospace, monospace;
-
-  --wrap: 900px;
-  --wrap-wide: 1100px;
-  --gutter: 24px;
-  --section-y: clamp(80px, 12vw, 120px);
-  --header-h: 64px;
-  --radius: 6px;
-
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 /* ---------- Base ---------- */
@@ -50,7 +43,8 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 16px);
+  scroll-padding-top: calc(var(--bar-h) + 24px);
+  background: var(--page);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -60,38 +54,38 @@ html {
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-  overflow-x: hidden;
-  text-rendering: optimizeLegibility;
+  font-family: var(--font);
+  font-size: var(--size);
+  line-height: 1.7;
+  color: var(--fg);
+  background: var(--page);
   -webkit-font-smoothing: antialiased;
+  font-variant-ligatures: none;
 }
 
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  color: inherit;
-}
-
-ul {
+ul,
+ol {
   list-style: none;
 }
 
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 ::selection {
-  background: var(--accent);
-  color: #fff;
+  background: rgb(127 196 154 / 0.3);
+  color: var(--strong);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-ink);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
 }
 
 .sr-only {
@@ -108,153 +102,225 @@ ul {
 
 .skip-link {
   position: absolute;
-  left: 16px;
+  left: 12px;
   top: -100px;
   z-index: 200;
-  padding: 10px 16px;
-  background: var(--ink);
-  color: var(--bg);
-  font-size: 14px;
+  padding: 8px 14px;
+  background: var(--green);
+  color: var(--term);
   font-weight: 600;
-  border-radius: var(--radius);
-  text-decoration: none;
 }
 
 .skip-link:focus {
   top: 12px;
 }
 
-/* ---------- Layout helpers ---------- */
-.wrap {
-  max-width: var(--wrap);
+/* ---------- The terminal window ---------- */
+.window {
+  max-width: 980px;
   margin: 0 auto;
-  padding: 0 var(--gutter);
+  background: var(--term);
+  min-height: 100vh;
 }
 
-.section {
-  padding: var(--section-y) 0;
+@media (min-width: 1040px) {
+  .window {
+    margin: 32px auto 48px;
+    min-height: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
 }
 
-.section--alt {
-  background: var(--bg-alt);
+.session {
+  padding: 32px var(--pad) 48px;
 }
 
-.eyebrow {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--accent-ink);
-  margin-bottom: 12px;
+/* A command block: prompt line, then its output */
+.block + .block {
+  margin-top: var(--gap);
 }
 
-.section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(30px, 5vw, 36px);
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
-  color: var(--ink);
-  margin-bottom: 48px;
+.cmd {
+  font-size: var(--size);
+  font-weight: 500;
+  color: var(--strong);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.ps1 {
+  font-weight: 500;
 }
 
-.chip {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 4px 10px;
-  background: var(--bg-chip);
-  color: var(--ink-chip);
-  border-radius: 3px;
+.ps1__user {
+  color: var(--green);
 }
 
-.chips--lg {
-  gap: 10px;
+.ps1__path {
+  color: var(--blue);
 }
 
-.chips--lg .chip {
-  font-size: 12px;
-  padding: 6px 14px;
-  border-radius: 4px;
+.ps1__sign {
+  color: var(--fg);
+  margin-right: 1ch;
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  padding: 14px 32px;
-  border-radius: var(--radius);
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color 0.2s,
-    border-color 0.2s,
-    color 0.2s;
+.out {
+  margin-top: 12px;
 }
 
-.btn--solid {
-  background: var(--ink);
-  color: var(--bg);
-  border: 1.5px solid var(--ink);
+/* A new command after some output gets breathing room, like a real session */
+.out + .cmd {
+  margin-top: 32px;
 }
 
-.btn--solid:hover {
-  background: #333;
-  border-color: #333;
+/* ---------- The one page-load moment (hero) ----------
+   Type the commands, stream the escalation, land on "resolved".
+   Without motion preference or support, everything is simply shown. */
+@media (prefers-reduced-motion: no-preference) {
+  .type {
+    display: inline-block;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+  .type--1 {
+    animation: type 0.42s steps(6, end) 0.15s both;
+  }
+  .type--2 {
+    animation: type 1s steps(31, end) 1s both;
+  }
+  .seq {
+    animation: appear 0.18s ease both;
+  }
+  .seq--1 {
+    animation-delay: 0.62s;
+  }
+  .seq--2 {
+    animation-delay: 0.9s;
+    animation-duration: 0.01s;
+  }
+  .seq--3 {
+    animation-delay: 2.1s;
+  }
+  .seq--4 {
+    animation-delay: 2.35s;
+  }
+  .seq--5 {
+    animation-delay: 2.7s;
+  }
+  .seq--6 {
+    animation-delay: 3.05s;
+  }
+  .seq--7 {
+    animation-delay: 3.4s;
+  }
+  .seq--8 {
+    animation-delay: 3.6s;
+  }
 }
 
-.btn--ghost {
-  background: transparent;
-  color: var(--ink);
-  border: 1.5px solid #ccc;
+@keyframes type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
-.btn--ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent-ink);
-}
-
-/* ---------- Motion (progressive enhancement, never hides content without support) ---------- */
-@keyframes fade-up {
+@keyframes appear {
   from {
     opacity: 0;
-    transform: translateY(24px);
   }
   to {
     opacity: 1;
-    transform: none;
+  }
+}
+
+.comment {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.dim {
+  color: var(--muted);
+}
+
+.ok {
+  color: var(--green);
+}
+
+.warn {
+  color: var(--amber);
+}
+
+/* Terminal-style button: [ label ] */
+.tbtn {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid var(--line-strong);
+  color: var(--strong);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.tbtn:hover {
+  text-decoration: none;
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.tbtn--primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--term);
+}
+
+.tbtn--primary:hover {
+  background: transparent;
+  color: var(--green);
+}
+
+/* Prose output (about text, post bodies) keeps a readable measure */
+.prose-out {
+  max-width: 72ch;
+}
+
+.prose-out p + p {
+  margin-top: 1em;
+}
+
+/* Blinking block cursor — stops after a few blinks */
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  vertical-align: -0.2em;
+  background: var(--fg);
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .intro > * {
-    animation: fade-up 0.6s ease both;
+  .cursor {
+    animation: blink 1.1s steps(1) 8;
   }
-  .intro > :nth-child(2) {
-    animation-delay: 0.15s;
-  }
-  .intro > :nth-child(3) {
-    animation-delay: 0.3s;
-  }
-  .intro > :nth-child(4) {
-    animation-delay: 0.45s;
-  }
+}
 
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: fade-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 22%;
-    }
+@media (max-width: 560px) {
+  :root {
+    --size: 14px;
+  }
+  .hide-sm {
+    display: none;
   }
 }

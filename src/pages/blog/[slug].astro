@@ -1,8 +1,9 @@
 ---
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import Prompt from "../../components/Prompt.astro";
 import { SITE } from "../../data/site";
-import { getPublishedPosts, isLocal, formatDate, type Post } from "../../lib/posts";
+import { getPublishedPosts, isLocal, type Post } from "../../lib/posts";
 
 export async function getStaticPaths() {
   const posts = (await getPublishedPosts()).filter(isLocal);
@@ -18,6 +19,7 @@ const { Content } = await render(post);
 const { title, description, date, updated, tags } = post.data;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const siteUrl = new URL("/", Astro.site).href;
+const isoDate = (d: Date) => d.toISOString().slice(0, 10);
 
 const article = {
   "@context": "https://schema.org",
@@ -42,62 +44,49 @@ const article = {
   modifiedTime={updated}
   jsonLd={[article]}
 >
-  <article class="article wrap">
-    <header class="article__header">
-      <p class="eyebrow"><a href="/#blog">Blog</a></p>
+  <article class="block">
+    <Prompt as="p" command={`cat posts/${post.id}.md`} />
+    <header class="out article__header">
       <h1 class="article__title">{title}</h1>
-      <p class="article__meta">
-        {date && <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>}
-        {tags.length > 0 && <span> · {tags.join(" · ")}</span>}
+      <p class="dim article__meta">
+        {date && <time datetime={isoDate(date)}>{isoDate(date)}</time>}
+        {tags.map((t) => <span class="ok">{t.toLowerCase()}</span>)}
       </p>
     </header>
     <div class="prose">
       <Content />
     </div>
-    <footer class="article__footer">
-      <a class="btn btn--ghost" href="/#blog">← All posts</a>
-    </footer>
+    <p class="article__back"><a class="tbtn" href="/#blog">cd ..</a></p>
   </article>
 </Base>
 
 <style>
-  .article {
-    max-width: 760px;
-    padding-top: calc(var(--header-h) + 64px);
-    padding-bottom: var(--section-y);
-  }
-
   .article__header {
-    margin-bottom: 40px;
-  }
-
-  .article__header .eyebrow a {
-    text-decoration: none;
-  }
-
-  .article__title {
-    font-family: var(--font-serif);
-    font-size: clamp(32px, 5.5vw, 48px);
-    font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -1px;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
   }
 
   .article__meta {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2ch;
   }
 
-  .article__footer {
-    margin-top: 56px;
+  .article__title {
+    font-size: clamp(24px, 4.4vw, 36px);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--strong);
+    margin-bottom: 8px;
+    max-width: 40ch;
+  }
+
+  .article__back {
+    margin-top: 48px;
   }
 
   .prose {
-    font-size: 17px;
-    line-height: 1.8;
-    color: var(--ink-body);
+    max-width: 72ch;
   }
 
   .prose > :global(*) + :global(*) {
@@ -105,33 +94,46 @@ const article = {
   }
 
   .prose :global(h2) {
-    font-family: var(--font-serif);
-    font-size: 28px;
-    font-weight: 400;
-    line-height: 1.25;
-    color: var(--ink);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--strong);
     margin-top: 2em;
   }
 
+  .prose :global(h2)::before {
+    content: "## ";
+    color: var(--green);
+  }
+
   .prose :global(h3) {
-    font-size: 19px;
+    font-size: inherit;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--strong);
     margin-top: 1.6em;
   }
 
+  .prose :global(h3)::before {
+    content: "### ";
+    color: var(--green);
+  }
+
   .prose :global(a) {
-    color: var(--accent-ink);
+    text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  .prose :global(strong) {
+    color: var(--strong);
+    font-weight: 600;
   }
 
   .prose :global(ul),
   .prose :global(ol) {
-    padding-left: 1.4em;
+    padding-left: 2ch;
   }
 
   .prose :global(ul) {
-    list-style: disc;
+    list-style: "- ";
   }
 
   .prose :global(ol) {
@@ -143,33 +145,31 @@ const article = {
   }
 
   .prose :global(blockquote) {
-    border-left: 3px solid var(--accent);
-    padding-left: 16px;
-    color: var(--ink-muted);
+    border-left: 2px solid var(--green);
+    padding-left: 2ch;
+    color: var(--muted);
   }
 
   .prose :global(code) {
-    font-family: var(--font-mono);
-    font-size: 0.88em;
-    background: var(--bg-chip);
-    padding: 2px 6px;
-    border-radius: 4px;
+    color: var(--amber);
   }
 
   .prose :global(pre) {
     overflow-x: auto;
-    padding: 16px 20px;
-    border-radius: var(--radius);
-    background: #1f2420;
-    color: #e8ece9;
-    font-size: 14px;
+    padding: 14px 16px;
+    background: var(--bar);
+    border: 1px solid var(--line);
+    border-radius: 4px;
     line-height: 1.6;
   }
 
   .prose :global(pre code) {
-    background: none;
-    padding: 0;
-    color: inherit;
+    color: var(--fg);
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    border: 1px solid var(--line);
   }
 
   /* Prism token colors (class-based, so they work under the strict CSP) */
@@ -177,7 +177,7 @@ const article = {
   .prose :global(.token.prolog),
   .prose :global(.token.doctype),
   .prose :global(.token.cdata) {
-    color: #8b958d;
+    color: var(--muted);
     font-style: italic;
   }
 
@@ -190,20 +190,20 @@ const article = {
   .prose :global(.token.atrule),
   .prose :global(.token.important),
   .prose :global(.token.selector) {
-    color: #e6b17a;
+    color: var(--amber);
   }
 
   .prose :global(.token.string),
   .prose :global(.token.char),
   .prose :global(.token.attr-value),
   .prose :global(.token.url) {
-    color: #a6d6ae;
+    color: var(--green);
   }
 
   .prose :global(.token.function),
   .prose :global(.token.class-name),
   .prose :global(.token.builtin) {
-    color: #8cc4e8;
+    color: var(--blue);
   }
 
   .prose :global(.token.number),
@@ -221,9 +221,5 @@ const article = {
   .prose :global(.token.parameter),
   .prose :global(.token.regex) {
     color: #d7b8f3;
-  }
-
-  .prose :global(img) {
-    border-radius: var(--radius);
   }
 </style>

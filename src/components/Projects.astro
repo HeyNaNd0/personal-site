@@ -1,30 +1,30 @@
 ---
+import Prompt from "./Prompt.astro";
 import { PROJECTS } from "../data/site";
+
+const toIdent = (s: string) => s.toLowerCase().replace(/\s+/g, "-");
 ---
 
-<section id="projects" class="section" aria-labelledby="projects-title">
-  <div class="wrap">
-    <div class="reveal">
-      <p class="eyebrow">Projects</p>
-      <h2 id="projects-title" class="section-title">What I'm building</h2>
-    </div>
-    <ul class="projects">
+<section id="projects" class="block" aria-labelledby="proj-cmd">
+  <Prompt id="proj-cmd" command="ls -l projects/" />
+  <div class="out">
+    <p class="dim">total {PROJECTS.length}</p>
+    <ul class="ls">
       {
         PROJECTS.map((p) => (
-          <li class="project reveal">
-            <div class="project__head">
-              <h3 class="project__title">
+          <li class="ls__item">
+            <div class="ls__line">
+              <span class="ls__perm dim hide-sm" aria-hidden="true">drwxr-xr-x eric</span>
+              <h3 class="ls__name">
                 <a href={p.link} target="_blank" rel="noopener">
-                  {p.title}
-                  <span class="sr-only"> (opens in a new tab)</span>
+                  {p.dir}/<span class="sr-only"> {p.title} (opens in a new tab)</span>
                 </a>
               </h3>
-              <span class="project__arrow" aria-hidden="true">↗</span>
             </div>
-            <p class="project__desc">{p.description}</p>
-            <ul class="chips" aria-label="Technologies">
+            <p class="ls__desc">{p.description}</p>
+            <ul class="ls__tags" aria-label="Technologies">
               {p.tags.map((t) => (
-                <li class="chip">{t}</li>
+                <li>{toIdent(t)}</li>
               ))}
             </ul>
           </li>
@@ -35,86 +35,49 @@ import { PROJECTS } from "../data/site";
 </section>
 
 <style>
-  .projects {
-    display: grid;
-    gap: 24px;
+  .ls__item {
+    margin-top: 20px;
   }
 
-  .project {
-    position: relative;
-    padding: 32px;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    transition:
-      border-color 0.3s ease,
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-
-  .project:hover,
-  .project:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.06);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .project:hover {
-      transform: translateY(-2px);
-    }
-  }
-
-  .project__head {
+  .ls__line {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 12px;
+    gap: 2ch;
+    align-items: baseline;
   }
 
-  .project__title {
-    font-family: var(--font-serif);
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.3;
-    color: var(--ink);
+  .ls__perm {
+    flex: none;
+    white-space: nowrap;
   }
 
-  .project__title a {
-    text-decoration: none;
+  .ls__name {
+    font-size: inherit;
+    font-weight: 600;
   }
 
-  /* Whole card is clickable via the title link */
-  .project__title a::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
+  .ls__desc,
+  .ls__tags {
+    padding-left: 17ch;
+    max-width: calc(72ch + 17ch);
   }
 
-  .project__title a:focus-visible {
-    outline: none;
+  .ls__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2ch;
+    margin-top: 4px;
+    color: var(--green);
   }
 
-  .project:has(a:focus-visible) {
-    outline: 2px solid var(--accent-ink);
-    outline-offset: 3px;
+  .ls__tags::before {
+    content: "#";
+    color: var(--muted);
   }
 
-  .project__arrow {
-    color: var(--accent);
-  }
-
-  .project__desc {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--ink-muted);
-    margin-bottom: 16px;
-  }
-
-  @media (max-width: 559px) {
-    .project {
-      padding: 24px;
+  @media (max-width: 560px) {
+    .ls__desc,
+    .ls__tags {
+      padding-left: 2ch;
     }
   }
 </style>

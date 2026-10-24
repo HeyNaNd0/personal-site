@@ -1,100 +1,106 @@
 ---
+import Prompt from "./Prompt.astro";
 import { HERO, SITE } from "../data/site";
+
+// An illustrative escalation: the ticket climbs the tiers and is resolved at Tier 3.
+const rows = [
+  { tier: "1", owner: "frontline", status: "escalated", cls: "warn" },
+  { tier: "2", owner: "technical", status: "escalated", cls: "warn" },
+  { tier: "3", owner: "eric", status: "resolved", cls: "ok" },
+];
 ---
 
-<section id="top" class="hero" aria-labelledby="hero-title">
-  <div class="hero__glow hero__glow--a" aria-hidden="true"></div>
-  <div class="hero__glow hero__glow--b" aria-hidden="true"></div>
-  <div class="hero__content intro">
-    <p class="eyebrow hero__eyebrow">{HERO.eyebrow}</p>
-    <h1 id="hero-title" class="hero__title">{SITE.name}</h1>
-    <p class="hero__lede">{HERO.lede}</p>
-    <div class="hero__actions">
-      <a class="btn btn--solid" href="#experience">View Experience</a>
-      <a class="btn btn--ghost" href="#contact">Get in Touch</a>
-    </div>
+<section id="top" class="block hero" aria-labelledby="hero-name">
+  <Prompt as="p" command="whoami" textClass="type type--1" />
+  <div class="out hero__whoami seq seq--1">
+    <h1 id="hero-name" class="hero__name">{SITE.name}</h1>
+    <p class="hero__role">{HERO.role}</p>
+    <p>{HERO.lede}</p>
+    <p class="dim">{HERO.where}</p>
+  </div>
+
+  <Prompt as="p" class="hero__watch-cmd seq seq--2" command="kubectl get escalations --watch" textClass="type type--2" />
+  <table class="out watch">
+    <caption class="sr-only">How an escalated ticket reaches Tier 3, where Eric resolves it</caption>
+    <thead class="seq seq--3">
+      <tr><th scope="col">TICKET</th><th scope="col">TIER</th><th scope="col">OWNER</th><th scope="col">STATUS</th></tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r, i) => (
+          <tr class={`seq seq--${4 + i}`}>
+            <td>inc-4012</td>
+            <td>{r.tier}</td>
+            <td class={r.owner === "eric" ? "ok" : undefined}>{r.owner}</td>
+            <td class={r.cls}>{r.status}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="out comment seq seq--7"># {HERO.tagline}</p>
+
+  <div class="hero__actions seq seq--8">
+    <a class="tbtn tbtn--primary" href="#experience">View experience</a>
+    <a class="tbtn" href="#contact">Get in touch</a>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    overflow: hidden;
-    min-height: 100vh;
-    min-height: 100svh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: calc(var(--header-h) + 32px) var(--gutter) 64px;
-    background: linear-gradient(165deg, #fcfcfa 0%, #f5f3ef 50%, #eae7e0 100%);
+    padding-top: 8px;
   }
 
-  .hero__glow {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
+  .hero__name {
+    font-size: clamp(34px, 7.4vw, 64px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--strong);
+    margin-bottom: 14px;
   }
 
-  .hero__glow--a {
-    top: 10%;
-    right: 5%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgb(107 143 113 / 0.08) 0%, transparent 70%);
-  }
-
-  .hero__glow--b {
-    bottom: 15%;
-    left: 8%;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgb(107 143 113 / 0.05) 0%, transparent 70%);
-  }
-
-  .hero__content {
-    position: relative;
-    max-width: 800px;
-    text-align: center;
-  }
-
-  .hero__eyebrow {
-    font-size: 14px;
+  .hero__role {
+    color: var(--strong);
     font-weight: 500;
-    margin-bottom: 16px;
   }
 
-  .hero__title {
-    font-family: var(--font-serif);
-    font-size: clamp(40px, 7vw, 72px);
+  .hero__whoami p {
+    max-width: 84ch;
+  }
+
+  .watch {
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .watch th,
+  .watch td {
+    text-align: left;
+    padding: 0 3ch 0 0;
     font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -1.5px;
-    color: var(--ink);
-    margin-bottom: 24px;
+    white-space: nowrap;
   }
 
-  .hero__lede {
-    font-size: 18px;
-    line-height: 1.7;
-    color: var(--ink-muted);
-    max-width: 580px;
-    margin: 0 auto 40px;
+  .watch th {
+    color: var(--muted);
+  }
+
+  .watch td:first-child {
+    color: var(--muted);
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
   }
 
-  @media (max-width: 480px) {
-    .hero__lede {
-      font-size: 17px;
-    }
-    .hero__actions .btn {
-      flex: 1 1 100%;
-      justify-content: center;
+  @media (max-width: 400px) {
+    .watch th,
+    .watch td {
+      padding-right: 2ch;
     }
   }
 </style>

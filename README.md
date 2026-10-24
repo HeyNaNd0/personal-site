@@ -7,7 +7,8 @@ Personal site for Eric Fernandez — Cloud Infrastructure Engineer & Kubernetes 
 ## Stack
 
 - [Astro 7](https://astro.build) — every page is prebuilt static HTML; ~1 KB of JavaScript total
-- Self-hosted fonts (DM Sans, DM Serif Display, DM Mono) — no third-party requests
+- Terminal design: the page reads as one shell session (`whoami`, `kubectl get experience`, `ls -l projects/`)
+- Self-hosted IBM Plex Mono — no third-party requests
 - Azure Static Web Apps (Free tier), deployed by GitHub Actions
 - Node 24 (see `.nvmrc`)
 
@@ -22,7 +23,8 @@ The page, the structured data Google reads, and the link previews all come from 
 |---|---|
 | Jobs, projects, skills, About text | `src/data/site.ts` |
 | Page title / Google description | `SITE.title` / `SITE.description` in `src/data/site.ts` |
-| Look and feel | `src/styles/global.css` + the `<style>` block in each `src/components/*.astro` |
+| Look and feel | `src/styles/global.css` (colors, prompt, page-load sequence) + the `<style>` block in each `src/components/*.astro` |
+| How a job reads in `kubectl get experience` | the `kube` field on each job in `src/data/site.ts` |
 | Link-preview image | `public/og.png` (1200×630) |
 | Security headers, caching, 404 | `public/staticwebapp.config.json` |
 

@@ -1,165 +1,71 @@
 ---
-import { getPublishedPosts, postHref, formatDate, isExternal } from "../lib/posts";
+import Prompt from "./Prompt.astro";
+import { getPublishedPosts, postHref, isExternal } from "../lib/posts";
 
 const posts = await getPublishedPosts();
+const isoDate = (d: Date) => d.toISOString().slice(0, 10);
+const hostOf = (url: string) => new URL(url).hostname.replace(/^www\./, "");
 ---
 
-<section id="blog" class="section section--alt" aria-labelledby="blog-title">
-  <div class="wrap">
-    <div class="reveal">
-      <p class="eyebrow">Blog</p>
-      <h2 id="blog-title" class="section-title">Writing &amp; notes</h2>
-    </div>
-    <ul class="posts">
-      {
-        posts.map((post) => {
-          const href = postHref(post);
-          const external = isExternal(post);
-          return (
-            <li class="post reveal">
-              <div class="post__head">
-                <h3 class="post__title">
-                  {href ? (
-                    <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined}>
-                      {post.data.title}
-                      {external && <span class="sr-only"> (opens in a new tab)</span>}
-                    </a>
-                  ) : (
-                    post.data.title
-                  )}
-                </h3>
-                {post.data.date && (
-                  <time class="post__date" datetime={post.data.date.toISOString().slice(0, 10)}>
-                    {formatDate(post.data.date)}
-                  </time>
-                )}
-              </div>
-              <p class="post__excerpt">{post.data.description}</p>
-              <div class="post__foot">
-                <ul class="chips" aria-label="Tags">
-                  {post.data.tags.map((t) => (
-                    <li class="chip chip--alt">{t}</li>
-                  ))}
-                </ul>
+<section id="blog" class="block" aria-labelledby="blog-cmd">
+  <Prompt id="blog-cmd" command="ls -t posts/" />
+  <ul class="out posts">
+    {
+      posts.map((post) => {
+        const href = postHref(post);
+        const external = isExternal(post);
+        return (
+          <li class="post">
+            {post.data.date ? (
+              <time class="post__date dim" datetime={isoDate(post.data.date)}>
+                {isoDate(post.data.date)}
+              </time>
+            ) : (
+              <span class="post__date warn">drafting</span>
+            )}
+            <div class="post__body">
+              <h3 class="post__title">
                 {href ? (
-                  <span class="post__cta" aria-hidden="true">
-                    Read {external ? "↗" : "→"}
-                  </span>
+                  <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener" : undefined}>
+                    {post.data.title}
+                    {external && <span class="sr-only"> (opens in a new tab)</span>}
+                  </a>
                 ) : (
-                  <span class="post__soon">Coming soon</span>
+                  post.data.title
                 )}
-              </div>
-            </li>
-          );
-        })
-      }
-    </ul>
-  </div>
+              </h3>
+              <p class="post__desc">{post.data.description}</p>
+              {external && post.data.external && <p class="dim">on {hostOf(post.data.external)}</p>}
+              {post.data.upcoming && <p class="warn">coming soon</p>}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
 </section>
 
 <style>
-  .posts {
-    border-bottom: 1px solid var(--line-strong);
-  }
-
   .post {
-    position: relative;
-    padding: 32px 0;
-    border-top: 1px solid var(--line-strong);
+    display: grid;
+    grid-template-columns: 10ch minmax(0, 1fr);
+    column-gap: 3ch;
+    max-width: calc(72ch + 13ch);
   }
 
-  .post__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 16px;
-    margin-bottom: 8px;
+  .post + .post {
+    margin-top: 18px;
   }
 
   .post__title {
-    font-family: var(--font-serif);
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.35;
-    color: var(--ink);
-    max-width: 80%;
+    font-size: inherit;
+    font-weight: 600;
+    color: var(--strong);
   }
 
-  .post__title a {
-    text-decoration: none;
-  }
-
-  .post__title a::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-  }
-
-  .post:has(a:hover) .post__title,
-  .post:has(a:hover) .post__cta {
-    color: var(--accent-ink);
-  }
-
-  .post__title a:focus-visible {
-    outline: none;
-  }
-
-  .post:has(a:focus-visible) {
-    outline: 2px solid var(--accent-ink);
-    outline-offset: 4px;
-  }
-
-  .post__date {
-    flex: none;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--ink-faint);
-  }
-
-  .post__excerpt {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--ink-muted);
-    margin-bottom: 12px;
-  }
-
-  .post__foot {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .chip--alt {
-    background: var(--bg-chip-alt);
-  }
-
-  .post__cta,
-  .post__soon {
-    margin-left: auto;
-    flex: none;
-    font-size: 13px;
-  }
-
-  .post__cta {
-    font-weight: 500;
-    color: var(--accent-ink);
-  }
-
-  .post__soon {
-    color: var(--ink-faint);
-    font-style: italic;
-  }
-
-  @media (max-width: 559px) {
-    .post__head {
-      flex-direction: column;
-      gap: 4px;
-    }
-    .post__title {
-      max-width: none;
-    }
-    .post__foot {
-      flex-wrap: wrap;
+  @media (max-width: 560px) {
+    .post {
+      grid-template-columns: 1fr;
     }
   }
 </style>
