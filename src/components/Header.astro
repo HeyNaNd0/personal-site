@@ -1,5 +1,5 @@
 ---
-import { NAV } from "../data/site";
+import { NAV, PROMPT } from "../data/site";
 
 interface Props {
   /** true on the home page: links scroll to sections. Elsewhere they point back to the home page. */
@@ -10,127 +10,118 @@ const { sectionNav = false } = Astro.props;
 const prefix = sectionNav ? "" : "/";
 ---
 
-<header class="site-header" data-site-header>
-  <div class="site-header__inner">
-    <a class="brand" href={sectionNav ? "#top" : "/"} aria-label="Eric Fernandez — home">EF<span aria-hidden="true">.</span></a>
-    <nav class="site-nav" aria-label="Sections">
-      <ul>
-        {
-          NAV.map((item) => (
-            <li>
-              <a href={`${prefix}${item.href}`} data-nav-link={item.href.slice(1)}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-  </div>
+<header class="titlebar" data-site-header>
+  <span class="titlebar__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+  <a class="titlebar__title" href={sectionNav ? "#top" : "/"}>{PROMPT.user}@{PROMPT.host}: {PROMPT.path}<span class="sr-only"> (home)</span></a>
+  <nav class="titlebar__nav" aria-label="Sections">
+    <ul>
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={`${prefix}${item.href}`} data-nav-link={item.href.slice(1)}>
+              {item.label.toLowerCase()}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
 </header>
 
 <script src="../scripts/nav.ts"></script>
 
 <style>
-  .site-header {
-    position: fixed;
-    inset: 0 0 auto 0;
+  .titlebar {
+    position: sticky;
+    top: 0;
     z-index: 100;
-    background: rgb(252 252 250 / 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s ease;
-  }
-
-  .site-header[data-scrolled] {
-    border-bottom-color: var(--line);
-  }
-
-  .site-header__inner {
-    max-width: var(--wrap-wide);
-    margin: 0 auto;
-    padding: 0 var(--gutter);
-    height: var(--header-h);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    gap: 16px;
+    height: var(--bar-h);
+    padding: 0 var(--pad);
+    background: var(--bar);
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
   }
 
-  .brand {
+  @media (min-width: 1040px) {
+    .titlebar {
+      border-radius: 12px 12px 0 0;
+    }
+  }
+
+  .titlebar__dots {
     flex: none;
-    font-family: var(--font-serif);
-    font-size: 22px;
-    letter-spacing: -0.5px;
-    color: var(--ink);
+    display: flex;
+    gap: 7px;
+  }
+
+  .titlebar__dots span {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .titlebar__title {
+    flex: none;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .titlebar__title:hover {
+    color: var(--strong);
     text-decoration: none;
   }
 
-  .brand span {
-    color: var(--accent);
-  }
-
-  .site-nav {
+  .titlebar__nav {
+    margin-left: auto;
     min-width: 0;
     overflow-x: auto;
     scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
-    mask-image: linear-gradient(to right, #000 85%, transparent);
   }
 
-  .site-nav::-webkit-scrollbar {
+  .titlebar__nav::-webkit-scrollbar {
     display: none;
   }
 
-  .site-nav ul {
+  .titlebar__nav ul {
     display: flex;
-    gap: 32px;
-    padding: 4px 0;
+    gap: 4px;
   }
 
-  .site-nav a {
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+  .titlebar__nav a {
+    display: block;
+    padding: 4px 10px;
+    color: var(--muted);
     white-space: nowrap;
-    color: #555;
+    border-radius: 4px;
+  }
+
+  .titlebar__nav a:hover {
+    color: var(--strong);
+    background: var(--hover);
     text-decoration: none;
-    padding-bottom: 2px;
-    border-bottom: 2px solid transparent;
-    transition:
-      color 0.2s,
-      border-color 0.2s;
   }
 
-  .site-nav a:hover,
-  .site-nav a[aria-current="true"] {
-    color: var(--accent-ink);
+  .titlebar__nav a[aria-current="true"] {
+    color: var(--term);
+    background: var(--green);
   }
 
-  .site-nav a[aria-current="true"] {
-    border-bottom-color: var(--accent);
-  }
-
-  @media (min-width: 720px) {
-    .site-nav {
-      -webkit-mask-image: none;
-      mask-image: none;
+  @media (max-width: 720px) {
+    .titlebar__dots,
+    .titlebar__title {
+      display: none;
     }
-  }
-
-  @media (max-width: 719px) {
-    .site-header__inner {
-      gap: 16px;
+    .titlebar__nav {
+      margin-left: 0;
+      margin-right: calc(var(--pad) * -1);
+      padding-right: var(--pad);
     }
-    .site-nav ul {
-      gap: 18px;
-      padding-right: 24px;
-    }
-    .site-nav a {
-      font-size: 12px;
+    .titlebar__nav ul {
+      gap: 2px;
     }
   }
 </style>

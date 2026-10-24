@@ -1,0 +1,19 @@
+---
+import { PROMPT } from "../data/site";
+
+interface Props {
+  /** The command text shown after the prompt */
+  command: string;
+  /** h2 for section commands (the default); p for prompt lines that aren't headings */
+  as?: "h2" | "p";
+  id?: string;
+  class?: string;
+  /** Extra class on the command text (used for the typing animation) */
+  textClass?: string;
+  [attr: string]: unknown;
+}
+
+const { command, as: Tag = "h2", id, class: className, textClass, ...rest } = Astro.props;
+---
+
+<Tag class:list={["cmd", className]} id={id} {...rest}><span class="ps1" aria-hidden="true"><span class="ps1__user">{PROMPT.user}@{PROMPT.host}</span>:<span class="ps1__path">{PROMPT.path}</span><span class="ps1__sign">$</span></span><span class:list={["cmd__text", textClass]}>{command}</span></Tag>

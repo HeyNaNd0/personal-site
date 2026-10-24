@@ -1,21 +1,19 @@
 ---
-import { SITE } from "../data/site";
+import { PROMPT, SITE } from "../data/site";
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <p>&copy; {year} {SITE.name}. Built with purpose. U.S. Navy veteran.</p>
+  <p class="cmd" aria-hidden="true"><span class="ps1"><span class="ps1__user">{PROMPT.user}@{PROMPT.host}</span>:<span class="ps1__path">{PROMPT.path}</span><span class="ps1__sign">$</span></span><span class="cursor"></span></p>
+  <p class="comment"># &copy; {year} {SITE.name}. Built with purpose. U.S. Navy veteran.</p>
 </footer>
 
 <style>
   .site-footer {
-    padding: 40px var(--gutter);
-    border-top: 1px solid var(--line);
-    text-align: center;
+    padding: 0 var(--pad) 40px;
   }
 
-  .site-footer p {
-    font-size: 13px;
-    color: var(--ink-faint);
+  .site-footer .comment {
+    margin-top: 8px;
   }
 </style>

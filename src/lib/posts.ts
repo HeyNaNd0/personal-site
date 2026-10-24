@@ -23,7 +23,3 @@ export function postHref(post: Post): string | null {
   if (post.data.external) return post.data.external;
   return `/blog/${post.id}/`;
 }
-
-export function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
-}

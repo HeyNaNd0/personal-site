@@ -15,7 +15,7 @@ export const SITE = {
   role: "Cloud Infrastructure Engineer",
   location: { city: "Austin", region: "TX", country: "US" },
   ogImage: "/og.png",
-  ogImageAlt: "Eric Fernandez — Cloud Infrastructure Engineer · Kubernetes · AKS",
+  ogImageAlt: "Terminal window running whoami: Eric Fernandez, Tier 3 AKS escalation at Microsoft",
 };
 
 export const LINKS = {
@@ -25,13 +25,18 @@ export const LINKS = {
   medium: "https://medium.com/@0H_b0yy",
 };
 
+/** The `whoami` output at the top of the page. */
 export const HERO = {
-  eyebrow: "Cloud Infrastructure Engineer",
-  lede: "8 years in infrastructure — 5 on production Kubernetes at Google and Microsoft. Building reliable, observable, and secure systems.",
+  role: "Cloud infrastructure engineer. Tier 3 AKS escalation at Microsoft.",
+  lede: "8 years in infrastructure — 5 on production Kubernetes at Google and Microsoft.",
+  where: "Austin, TX. U.S. Navy veteran.",
+  tagline: "I don't close tickets. I close problems.",
 };
 
+/** The prompt shown before every command. */
+export const PROMPT = { user: "eric", host: "ericops", path: "~" };
+
 export const ABOUT = {
-  heading: "I don't close tickets. I close problems.",
   columns: [
     [
       "I'm a Cloud Infrastructure Engineer based in Austin, TX. Currently at Microsoft as an AKS Escalation Engineer, I serve as the Tier 3 escalation point for enterprise customers running production Kubernetes workloads on Azure.",
@@ -71,6 +76,8 @@ export type Job = {
   period: string;
   location: string;
   bullets: string[];
+  /** How the row reads in the `kubectl get experience` table. */
+  kube: { name: string; role: string; age: string };
 };
 
 /** Newest first. The first entry is treated as the current role. */
@@ -80,6 +87,7 @@ export const EXPERIENCE: Job[] = [
     title: "AKS Escalation Engineer",
     period: "2022 – Present",
     location: "Austin, TX (Remote)",
+    kube: { name: "microsoft", role: "aks-escalation", age: "2022-now" },
     bullets: [
       "Tier 3 escalation point for AKS production incidents across control plane, networking, node pools, and workload scheduling for enterprise customers.",
       "Designed autoscaling strategies (HPA, VPA, cluster autoscaler) reducing scheduling failures ~30% under variable production load.",
@@ -94,6 +102,7 @@ export const EXPERIENCE: Job[] = [
     title: "Technical Solutions Engineer — Kubernetes · GKE · Anthos",
     period: "2021 – 2022",
     location: "Austin, TX",
+    kube: { name: "google", role: "tse-gke-anthos", age: "2021-22" },
     bullets: [
       "Advised 10+ engineering teams on Kubernetes adoption: workload design, resource limits, namespace strategy, multi-cluster topology.",
       "Designed and validated GKE/Anthos reference architectures for enterprise hybrid and multi-cloud deployments.",
@@ -106,6 +115,7 @@ export const EXPERIENCE: Job[] = [
     title: "Enterprise Support Technician",
     period: "2020 – 2021",
     location: "Austin, TX (Remote)",
+    kube: { name: "meta", role: "enterprise-support", age: "2020-21" },
     bullets: [
       "Network operations support across VPN, DNS, DHCP, and data center connectivity for a global workforce.",
       "Root cause analysis on outages with post-incident documentation reducing repeat incidents.",
@@ -117,6 +127,7 @@ export const EXPERIENCE: Job[] = [
     title: "IT Resident · incl. SRE rotation",
     period: "2018 – 2020",
     location: "Mountain View & Sunnyvale, CA",
+    kube: { name: "google", role: "it-residency", age: "2018-20" },
     bullets: [
       "Google IT Residency Program, including a 3-month rotation with an SRE team covering monitoring, backup, and redundancy for production infrastructure.",
     ],
@@ -128,11 +139,14 @@ export type Project = {
   description: string;
   tags: string[];
   link: string;
+  /** Directory name in the `ls -l projects/` listing. */
+  dir: string;
 };
 
 export const PROJECTS: Project[] = [
   {
     title: "AKS AI Agent",
+    dir: "aks-ai-agent",
     description:
       "AI-powered AKS monitoring agent using Claude API with Helm chart, PVC persistence, health probes, and GitHub Actions CI/CD. Published technical write-up on Medium.",
     tags: ["Kubernetes", "Claude API", "Helm", "GitHub Actions", "Python"],
@@ -140,6 +154,7 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "LLM InferenceOps on AKS",
+    dir: "llm-inferenceops",
     description:
       "Deployed TinyLlama on AKS with full observability stack (Prometheus/Grafana), demonstrating GPU workload orchestration and inference monitoring.",
     tags: ["AKS", "LLM", "Prometheus", "Grafana", "GPU"],
@@ -147,6 +162,7 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "ARO SME Roadmap Dashboard",
+    dir: "aro-sme-roadmap",
     description:
       "Interactive React/Vite progress tracker for a self-directed 26-week Azure Red Hat OpenShift specialization program.",
     tags: ["React", "Vite", "Azure", "OpenShift"],
