@@ -185,38 +185,38 @@ a:hover {
     white-space: nowrap;
   }
   .type--1 {
-    animation: type 0.42s steps(6, end) 0.15s both;
+    animation: type 0.3s steps(6, end) 0.1s both;
   }
   .type--2 {
-    animation: type 1s steps(31, end) 1s both;
+    animation: type 0.7s steps(31, end) 0.65s both;
   }
   .seq {
     animation: appear 0.18s ease both;
   }
   .seq--1 {
-    animation-delay: 0.62s;
+    animation-delay: 0.42s;
   }
   .seq--2 {
-    animation-delay: 0.9s;
+    animation-delay: 0.6s;
     animation-duration: 0.01s;
   }
   .seq--3 {
-    animation-delay: 2.1s;
+    animation-delay: 1.4s;
   }
   .seq--4 {
-    animation-delay: 2.35s;
+    animation-delay: 1.55s;
   }
   .seq--5 {
-    animation-delay: 2.7s;
+    animation-delay: 1.75s;
   }
   .seq--6 {
-    animation-delay: 3.05s;
+    animation-delay: 1.95s;
   }
   .seq--7 {
-    animation-delay: 3.4s;
+    animation-delay: 2.15s;
   }
   .seq--8 {
-    animation-delay: 3.6s;
+    animation-delay: 2.25s;
   }
 }
 

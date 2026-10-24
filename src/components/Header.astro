@@ -12,7 +12,7 @@ const prefix = sectionNav ? "" : "/";
 
 <header class="titlebar" data-site-header>
   <span class="titlebar__dots" aria-hidden="true"><span></span><span></span><span></span></span>
-  <a class="titlebar__title" href={sectionNav ? "#top" : "/"} aria-label="Eric Fernandez — home">{PROMPT.user}@{PROMPT.host}: {PROMPT.path}</a>
+  <a class="titlebar__title" href={sectionNav ? "#top" : "/"}>{PROMPT.user}@{PROMPT.host}: {PROMPT.path}<span class="sr-only"> (home)</span></a>
   <nav class="titlebar__nav" aria-label="Sections">
     <ul>
       {
